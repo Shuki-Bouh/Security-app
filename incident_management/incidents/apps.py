@@ -6,4 +6,5 @@ class IncidentsConfig(AppConfig):
     name = 'incidents'
 
     def ready(self):
+        from . import kafkaConsumer
         return
