@@ -29,16 +29,6 @@ services:
     ports:
       - "3306:3306"
 
-  django_app:
-    image: trustno/djangoapp
-    container_name: django
-    ports:
-      - "8000:8000"
-    depends_on:
-      - mysql
-    command: >
-      sh -c "./entrypoint.sh"
-
   threat-detection-service:
     image: trustno/detectionapp
     container_name: detection
@@ -50,3 +40,15 @@ services:
       - kafka
     command: >
       sh -c "./entrypoint.sh"
+
+
+  django_app:
+    image: trustno/djangoapp
+    container_name: django
+    ports:
+      - "8000:8000"
+    depends_on:
+      - mysql
+    command: >
+      sh -c "./entrypoint.sh"
+
