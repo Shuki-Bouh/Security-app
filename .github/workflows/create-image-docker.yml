@@ -35,7 +35,7 @@ jobs:
           context: ./incident_management
           file: ./incident_management/Dockerfile
           push: true
-          tags: ${{ secrets.DOCKER_USERNAME }}/my-docker-hub-repository-image1:latest
+          tags: ${{ secrets.DOCKER_USERNAME }}/djangoapp:latest
           labels: ${{ steps.meta_image1.outputs.labels }}
 
       # Detection service
@@ -52,5 +52,5 @@ jobs:
           context: ./threat-detection-service
           file: ./threat-detection-service/Dockerfile
           push: true
-          tags: ${{ secrets.DOCKER_USERNAME }}/my-docker-hub-repository-image2:latest
+          tags: ${{ secrets.DOCKER_USERNAME }}/detectionapp:latest
           labels: ${{ steps.meta_image2.outputs.labels }}

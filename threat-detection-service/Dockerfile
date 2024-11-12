@@ -4,13 +4,14 @@ WORKDIR /www
 
 RUN apk update && \
     apk upgrade && \
-    apk install node
+    apk add nodejs npm
 
-COPY package*.json ./*
+COPY package.json .
+COPY package-lock.json .
 COPY src/ .
 COPY entrypoint.sh .
 
-RUN npm init && \
-    npm install
+RUN npm init
+RUN npm install
 
 EXPOSE 3000
