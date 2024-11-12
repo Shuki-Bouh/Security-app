@@ -1,0 +1,56 @@
+name: Publish Docker images
+
+on: [push]
+
+jobs:
+  push_to_registry:
+    name: Push Docker images to Docker Hub
+    runs-on: ubuntu-latest
+    permissions:
+      packages: write
+      contents: read
+      attestations: write
+      id-token: write
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v4
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v4
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      # Incident management
+      - name: Extract metadata for Incident management
+        id: meta_image1
+        uses: docker/metadata-action@v4
+        with:
+          images: my-docker-hub-namespace/my-docker-hub-repository-image1
+
+      - name: Build and push Incident management
+        id: push_image1
+        uses: docker/build-push-action@v4
+        with:
+          context: ./incident_management
+          file: ./incident_management/Dockerfile
+          push: true
+          tags: ${{ secrets.DOCKER_USERNAME }}/my-docker-hub-repository-image1:latest
+          labels: ${{ steps.meta_image1.outputs.labels }}
+
+      # Detection service
+      - name: Extract metadata for detection-service
+        id: meta_image2
+        uses: docker/metadata-action@v4
+        with:
+          images: my-docker-hub-namespace/my-docker-hub-repository-image2
+
+      - name: Build and push detection service
+        id: push_image2
+        uses: docker/build-push-action@v4
+        with:
+          context: ./threat-detection-service
+          file: ./threat-detection-service/Dockerfile
+          push: true
+          tags: ${{ secrets.DOCKER_USERNAME }}/my-docker-hub-repository-image2:latest
+          labels: ${{ steps.meta_image2.outputs.labels }}
