@@ -32,7 +32,7 @@ services:
       - "3306:3306"
 
   threat-detection-service:
-    image: trustno/detectionapp
+    image: trustno/detectionapp:latest
     container_name: detection
     ports:
       - "3000:3000"
@@ -45,7 +45,7 @@ services:
 
 
   django_app:
-    image: trustno/djangoapp
+    image: trustno/djangoapp:latest
     container_name: django
     ports:
       - "8000:8000"
@@ -54,3 +54,12 @@ services:
     command: >
       sh -c "./entrypoint.sh"
 
+  response_app:
+    image: trustno/responseapp:latest
+    container_name: response
+    ports:
+      - "8000:8000"
+    depends_on:
+      - kafka
+    command: >
+      sh -c "./entrypoint.sh"
