@@ -18,12 +18,3 @@ class Incident(models.Model):
     def __str__(self):
         return self.type
 
-class Detection(models.Model):
-
-    type = models.CharField(max_length=100)
-    details = models.TextField()
-    timestamp = models.DateTimeField(auto_now_add=True)
-
-
-    def __str__(self):
-        return self.type

@@ -7,8 +7,5 @@ class IncidentSerializer(serializers.ModelSerializer):
         fields = ['timestamp', 'id', 'type', 'action', 'details', 'severity', 'source']
 
 
-class DetectionSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Detection
-        fields = ['type', 'details', 'timestamp']
+
 
