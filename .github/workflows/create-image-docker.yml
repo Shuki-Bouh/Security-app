@@ -54,3 +54,21 @@ jobs:
           push: true
           tags: ${{ secrets.DOCKER_USERNAME }}/detectionapp:latest
           labels: ${{ steps.meta_image2.outputs.labels }}
+
+
+      # Response service
+      - name: Extract metadata for responce-service
+        id: meta_image3
+        uses: docker/metadata-action@v4
+        with:
+          images: my-docker-hub-namespace/my-docker-hub-repository-image3
+
+      - name: Build and push response service
+        id: push_image3
+        uses: docker/build-push-action@v4
+        with:
+          context: ./response-service
+          file: ./response-service/Dockerfile
+          push: true
+          tags: ${{ secrets.DOCKER_USERNAME }}/responseapp:latest
+          labels: ${{ steps.meta_image2.outputs.labels }}

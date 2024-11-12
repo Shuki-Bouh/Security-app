@@ -6,14 +6,11 @@ RUN apk update && \
     apk upgrade && \
     apk add nodejs npm
 
-COPY package.json .
-COPY package-lock.json .
-COPY src/ .
-COPY entrypoint.sh .
+COPY * .
 
 RUN chmod a+x entrypoint.sh
 
 RUN npm init
 RUN npm install
 
-EXPOSE 3000
+EXPOSE 4000
