@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Incident
+from .models import *
 
 class IncidentSerializer(serializers.ModelSerializer):
     class Meta:
@@ -9,16 +9,6 @@ class IncidentSerializer(serializers.ModelSerializer):
 
 class DetectionSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Incident
+        model = Detection
         fields = ['timestamp' 'type', 'details']
 
-class DetailsSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Incident
-        fields = ['ip' 'areald', 'patchinfo']
-
-
-class ThreatSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Incident
-        fields = ['type' 'details']
