@@ -54,3 +54,12 @@ services:
     command: >
       sh -c "./entrypoint.sh"
 
+  response_app:
+    image: trustno/responseapp:latest
+    container_name: response
+    ports:
+      - "4000:4000"
+    depends_on:
+      - kafka
+    command: >
+      sh -c "./entrypoint.sh"
