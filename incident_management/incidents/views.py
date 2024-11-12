@@ -21,14 +21,13 @@ class IncidentViewSet(viewsets.ModelViewSet):
 
     def send_high_severity_alert(self, incident):
         # Définir le sujet et le contenu de l'email
-        subject = f'Alerte : Incident de gravité élevée - {incident.title}'
+        subject = f'Alerte : Incident de gravité élevée - {incident.type}'
         message = (
             f"Un nouvel incident de gravité élevée a été signalé.\n\n"
-            f"Titre : {incident.title}\n"
-            f"Description : {incident.description}\n"
+            f"Titre : {incident.type}\n"
+            f"Description : {incident.details}\n"
             f"Gravité : {incident.severity}\n"
-            f"Statut : {incident.status}\n"
-            f"Créé le : {incident.created_at}\n\n"
+            f"Créé le : {incident.timestamp}\n\n"
             f"Merci de prendre les mesures nécessaires."
         )
         User = get_user_model()

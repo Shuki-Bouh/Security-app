@@ -6,18 +6,14 @@ class Incident(models.Model):
         ('Medium', 'Medium'),
         ('High', 'High'),
     ]
-    STATUS_CHOICES = [
-        ('Open', 'Open'),
-        ('In Progress', 'In Progress'),
-        ('Resolved', 'Resolved'),
-    ]
 
-    title = models.CharField(max_length=100)
-    description = models.TextField()
+    type = models.CharField(max_length=100)
+    details = models.TextField()
     severity = models.CharField(max_length=6, choices=SEVERITY_CHOICES)
-    status = models.CharField(max_length=11, choices=STATUS_CHOICES, default='Open')
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
+    timestamp = models.DateTimeField(auto_now_add=True)
+    action = models.TextField(default='blockIP')
+    source = models.TextField(default='ThreatDetectionService')
+
 
     def __str__(self):
-        return self.title
+        return self.type
