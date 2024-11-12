@@ -48,13 +48,17 @@ def send_response_to_kafka(incident):
 
 def process_message(message_value):
     # Utiliser le serializer pour valider et enregistrer les incidents
+    response = action(message_value["threat"]["type"])
     incident_data = {
         "type": message_value["threat"]["type"],
         "details": message_value["threat"]["details"],
-        "timestamp": message_value["timestamp"]
+        "timestamp": message_value["timestamp"],
+        "action": response[0],
+        "severity": response[1],
+        "source": "ThreatDetectionService"
     }
     print(incident_data)
-    serializer = DetectionSerializer(data=incident_data)
+    serializer = IncidentSerializer(data=incident_data)
     if serializer.is_valid():
         serializer.save()
         print("Incident sauvegardé depuis Kafka")
