@@ -6,7 +6,7 @@ from .serializers import *  # Serializer pour les incidents
 # Initialiser le consommateur Kafka
 consumer = KafkaConsumer(
     'incident-events',
-    bootstrap_servers='kafka:9092',
+    bootstrap_servers='localhost:9092',
     auto_offset_reset='earliest',
     enable_auto_commit=True,
     group_id='incident_consumer_group',
