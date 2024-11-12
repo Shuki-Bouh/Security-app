@@ -2,9 +2,10 @@ const { Kafka } = require('kafkajs');
 
 const kafka = new Kafka({
     clientId: 'threat-detection-service',
-    brokers: ['localhost:9092']  // Replace with actual Kafka broker addresses
+    brokers: [process.env.KAFKA_BROKER]  // Connect to Kafka broker as defined in Docker
 });
 
+// Example Kafka producer setup
 const producer = kafka.producer();
 
 const sendMessage = async ({ topic, message }) => {

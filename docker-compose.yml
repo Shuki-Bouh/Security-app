@@ -17,15 +17,6 @@ services:
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
 
-  threat-detection-service:
-    build:
-      context: ./path/to/threat-detection
-    environment:
-      KAFKA_BROKER: kafka:9092  # Kafka broker address
-    depends_on:
-      - kafka
-
-
 
   mysql:
     image: mysql:latest
@@ -39,7 +30,7 @@ services:
       - "3306:3306"
 
   django_app:
-    image: trustno/django_app
+    image: trustno/djangoapp
     container_name: django
     ports:
       - "8000:8000"
@@ -47,4 +38,15 @@ services:
       - mysql
     command: >
       sh -c "./entrypoint.sh"
-  
+
+  threat-detection-service:
+    image: trustno/detectionapp
+    container_name: detection
+    ports:
+      - "3000:3000"
+    environment:
+      KAFKA_BROKER: kafka:9092  # Kafka broker address
+    depends_on:
+      - kafka
+    command: >
+      sh -c "./entrypoint.sh"
