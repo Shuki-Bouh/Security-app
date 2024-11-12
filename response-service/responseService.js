@@ -59,7 +59,7 @@ app.get('/health', (req, res) => {
     res.status(200).send('Response Service is running');
 });
 
-const PORT = process.env.PORT || 3002;
+const PORT = process.env.PORT || 4000;
 app.listen(PORT, () => {
     console.log(`Response Service running on port ${PORT}`);
 });
