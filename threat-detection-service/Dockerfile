@@ -11,6 +11,8 @@ COPY package-lock.json .
 COPY src/ .
 COPY entrypoint.sh .
 
+RUN chmod a+x entrypoint.sh
+
 RUN npm init
 RUN npm install
 
