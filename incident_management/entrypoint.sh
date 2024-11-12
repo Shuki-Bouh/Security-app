@@ -3,6 +3,7 @@
 sleep 10
 
 # Exécuter les migrations
+python manage.py makemigrations
 python manage.py migrate
 
 # Créer le superutilisateur si aucun n'existe
