@@ -58,7 +58,7 @@ services:
     image: trustno/responseapp:latest
     container_name: response
     ports:
-      - "8000:8000"
+      - "4000:4000"
     depends_on:
       - kafka
     command: >

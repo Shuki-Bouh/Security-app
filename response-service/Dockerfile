@@ -6,7 +6,7 @@ RUN apk update && \
     apk upgrade && \
     apk add nodejs npm
 
-COPY * .
+COPY . .
 
 RUN chmod a+x entrypoint.sh
 
