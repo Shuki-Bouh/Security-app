@@ -1,6 +1,6 @@
 #!/bin/sh
 ./wait-for-it.sh mysql:3306
-sleep 10
+sleep 5
 
 # Exécuter les migrations
 python manage.py makemigrations
