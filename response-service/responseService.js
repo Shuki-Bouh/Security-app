@@ -4,7 +4,7 @@ const dotenv = require('dotenv');
 const { blockIP, quarantineArea, issuePatch } = require('./actions'); 
 
 // Load environment variables
-dotenv.config();
+dotenv.config({path:'.'});
 
 const app = express();
 app.use(express.json());
