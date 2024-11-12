@@ -20,7 +20,7 @@ const consumer = kafka.consumer({ groupId: 'response-service-group' });
 // Listen for Kafka messages and trigger the appropriate action
 const startConsumer = async () => {
     await consumer.connect();
-    await consumer.subscribe({ topic: 'incident-events', fromBeginning: true });
+    await consumer.subscribe({ topic: 'incident-response', fromBeginning: true });
 
     await consumer.run({
         eachMessage: async ({ message }) => {

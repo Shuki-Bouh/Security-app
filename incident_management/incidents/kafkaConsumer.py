@@ -41,7 +41,7 @@ def send_response_to_kafka(incident):
         "source": "ThreatDetectionService"
     }
     # Envoi du message à Kafka
-    producer.send('incident-events', value=response_message)
+    producer.send('incident-response', value=response_message)
     producer.flush()
     print("Message envoyé à Kafka :", response_message)
 
@@ -62,6 +62,7 @@ def process_message(message_value):
     if serializer.is_valid():
         serializer.save()
         print("Incident sauvegardé depuis Kafka")
+        send_response_to_kafka(serializer.data)
     else:
         print("Erreur de validation :", serializer.errors)
 
