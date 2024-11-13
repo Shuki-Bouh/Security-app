@@ -1,87 +1,65 @@
-const exec = require('child_process').exec;
+const { Kafka } = require('kafkajs');
+const express = require('express');
+const dotenv = require('dotenv');
+const { blockIP, quarantineArea, issuePatch } = require('./actions'); 
 
-// structure de données pour un stcokage lors de l'execution
-const blockedIps = new Set();
-const quarantinedAreas = new Set();
-const appliedPatches = [];
+// Load environment variables
+dotenv.config({path:'.'});
 
-// Block IP function
-const blockIp = (ip) => {
-    if (!blockedIps.has(ip)) {
-        console.log(`Blocking IP: ${ip}`);
-        blockedIps.add(ip);
+const app = express();
+app.use(express.json());
 
-        // Utilisation de regles firewall
-        exec(`sudo iptables -A INPUT -s ${ip} -j DROP`, (error, stdout, stderr) => {
-            if (error) {
-                console.error(`Error blocking IP ${ip}: ${stderr}`);
-            } else {
-                console.log(`IP ${ip} successfully blocked.`);
+// Kafka setup
+const kafka = new Kafka({
+    clientId: 'response-service',
+    brokers: [process.env.KAFKA_BROKER]
+});
+
+const consumer = kafka.consumer({ groupId: 'response-service-group' });
+
+// Listen for Kafka messages and trigger the appropriate action
+const startConsumer = async () => {
+    await consumer.connect();
+    await consumer.subscribe({ topic: 'incident-response', fromBeginning: true });
+
+    await consumer.run({
+        eachMessage: async ({ message }) => {
+            const incidentEvent = JSON.parse(message.value.toString());
+
+            const action = incidentEvent.actionRequired;
+            const details = incidentEvent.details;
+
+            console.log(`Received message: ${JSON.stringify(incidentEvent)}`);
+
+            switch (action) {
+                case 'blockIP':
+                    blockIP(details.ip);
+                    break;
+                case 'quarantineArea':
+                    quarantineArea(details.areaId);
+                    break;
+                case 'issuePatch':
+                    issuePatch(details.patchInfo);
+                    break;
+                default:
+                    console.log(`Unknown action: ${action}`);
+                    break;
             }
-        });
-    } else {
-        console.log(`IP ${ip} is already blocked.`);
-    }
+        },
+    });
 };
 
-// Zone de quarantaine
-const quarantineArea = (area) => {
-    if (!quarantinedAreas.has(area)) {
-        console.log(`Quarantining area: ${area}`);
-        quarantinedAreas.add(area);
-        // actions simulées
-        console.log(`Area '${area}' is now quarantined.`);
-    } else {
-        console.log(`Area '${area}' is already quarantined.`);
-    }
-};
+// Start the Kafka consumer
+startConsumer().catch((error) => {
+    console.error('Error starting consumer:', error);
+});
 
-// patch de securite
-const issueSecurityPatch = (patchDetails) => {
-    const patchId = `patch-${Date.now()}`; 
-    console.log(`Applying security patch: ${patchId}`);
+// Start Express server for health check (optional)
+app.get('/health', (req, res) => {
+    res.status(200).send('Response Service is running');
+});
 
-    const patch = {
-        id: patchId,
-        details: patchDetails,
-        appliedAt: new Date().toISOString(),
-    };
-
-    appliedPatches.push(patch);
-    console.log(`Patch '${patchId}' applied successfully.`);
-    return patch;
-};
-
-// Fonction principale pour trigger les actions
-const processThreat = (threat) => {
-    switch (threat.type) {
-        case 'IP Threat':
-            blockIp(threat.details.ip);
-            break;
-        case 'System Threat':
-            quarantineArea(threat.details.area);
-            break;
-        case 'Patchable Vulnerability':
-            issueSecurityPatch(threat.details.patchInfo);
-            break;
-        default:
-            console.log(`Unknown threat type: ${threat.type}`);
-    }
-};
-
-// Example: Threat handler that would be invoked upon receiving a threat from Incident Management Service
-const handleThreatEvent = (threatEvent) => {
-    console.log(`Received threat event: ${JSON.stringify(threatEvent)}`);
-    processThreat(threatEvent);
-};
-
-// Export functions for testing and integration
-module.exports = {
-    blockIp,
-    quarantineArea,
-    issueSecurityPatch,
-    handleThreatEvent,
-    getBlockedIps: () => Array.from(blockedIps),
-    getQuarantinedAreas: () => Array.from(quarantinedAreas),
-    getAppliedPatches: () => appliedPatches,
-};
+const PORT = process.env.PORT || 4000;
+app.listen(PORT, () => {
+    console.log(`Response Service running on port ${PORT}`);
+});
